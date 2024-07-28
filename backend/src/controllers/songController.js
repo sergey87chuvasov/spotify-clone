@@ -16,13 +16,47 @@ const addSong = async (req, res) => {
       resource_type: 'image',
     });
 
-    console.log(name, desc, album, audioUpload, imageUpload);
-  } catch (err) {}
+    const duration = `${Math.floor(audioUpload.duration / 60)}:${Math.floor(
+      audioUpload.duration % 60
+    )}`;
+
+    // console.log(name, desc, album, audioUpload, imageUpload);
+
+    const songData = {
+      name,
+      desc,
+      album,
+      image: imageUpload.secure_url,
+      file: audioUpload.secure_url,
+      duration,
+    };
+
+    const song = songModel(songData);
+    await song.save();
+
+    res.json({ success: true, message: 'Song Added' });
+  } catch (err) {
+    res.json({ success: false });
+  }
 };
 
 const listSong = async (req, res) => {
   try {
-  } catch (err) {}
+    const allSongs = await songModel.find({});
+
+    res.json({ success: true, songs: allSongs });
+  } catch (err) {
+    res.json({ success: false });
+  }
 };
 
-export { addSong, listSong };
+const removeSong = async (req, res) => {
+  try {
+    await songModel.findByIdAndDelete(req.body.id);
+    res.json({ success: true, message: 'Song removed' });
+  } catch (err) {
+    res.json({ success: false });
+  }
+};
+
+export { addSong, listSong, removeSong };
