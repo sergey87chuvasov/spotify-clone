@@ -20,7 +20,7 @@ const addSong = async (req, res) => {
       audioUpload.duration % 60
     )}`;
 
-    // console.log(name, desc, album, audioUpload, imageUpload);
+    console.log(name, desc, album, audioUpload, imageUpload);
 
     const songData = {
       name,
@@ -32,6 +32,7 @@ const addSong = async (req, res) => {
     };
 
     const song = songModel(songData);
+    console.log(song);
     await song.save();
 
     res.json({ success: true, message: 'Song Added' });
@@ -43,7 +44,6 @@ const addSong = async (req, res) => {
 const listSong = async (req, res) => {
   try {
     const allSongs = await songModel.find({});
-
     res.json({ success: true, songs: allSongs });
   } catch (err) {
     res.json({ success: false });
